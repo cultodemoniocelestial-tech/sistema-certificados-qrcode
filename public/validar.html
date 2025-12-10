@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validar Certificado - Sistema de Validação</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .result.valid {
+            background: #e8f5e9;
+            border: 3px solid #4caf50;
+        }
+
+        .result.invalid {
+            background: #ffebee;
+            border: 3px solid #f44336;
+        }
+
+        .result-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .result h2 {
+            margin-bottom: 20px;
+        }
+
+        .result.valid h2 {
+            color: #2e7d32;
+        }
+
+        .result.invalid h2 {
+            color: #c62828;
+        }
+
+        .certificate-info {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .info-value {
+            color: #333;
+            text-align: right;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-badge.ativo {
+            background: #4caf50;
+            color: white;
+        }
+
+        .status-badge.revogado {
+            background: #f44336;
+            color: white;
+        }
+
+        .nav-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .nav-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .nav-link a:hover {
+            text-decoration: underline;
+        }
+
+        .qr-info {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .qr-info p {
+            color: #1976d2;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Validar Certificado</h1>
+        <p class="subtitle">Digite o código do certificado ou escaneie o QR Code</p>
+
+        <div class="qr-info">
+            <p>💡 <strong>Dica:</strong> Se você escaneou o QR Code, o código já foi preenchido automaticamente. Basta clicar em "Verificar"!</p>
+        </div>
+
+        <div class="search-box">
+            <input 
+                type="text" 
+                class="search-input" 
+                id="codigoInput" 
+                placeholder="Digite o código do certificado..."
+            >
+            <button class="btn" id="verificarBtn">Verificar</button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 15px; color: #667eea; font-weight: 600;">Verificando certificado...</p>
+        </div>
+
+        <div class="result valid" id="resultValid">
+            <div class="result-icon">✅</div>
+            <h2>Certificado Válido</h2>
+            <p style="color: #666; margin-bottom: 20px;">Este certificado é autêntico e está ativo no sistema.</p>
+            
+            <div class="certificate-info">
+                <div class="info-row">
+                    <span class="info-label">Aluno:</span>
+                    <span class="info-value" id="validAluno"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Curso:</span>
+                    <span class="info-value" id="validCurso"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Carga Horária:</span>
+                    <span class="info-value" id="validCarga"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Data de Emissão:</span>
+                    <span class="info-value" id="validData"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Código:</span>
+                    <span class="info-value" id="validCodigo"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Status:</span>
+                    <span class="info-value"><span class="status-badge ativo" id="validStatus">Ativo</span></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="result invalid" id="resultInvalid">
+            <div class="result-icon">❌</div>
+            <h2>Certificado Inválido</h2>
+            <p style="color: #666;">Este código não foi encontrado no sistema ou o certificado foi revogado.</p>
+        </div>
+
+        <div class="nav-link">
+            <a href="upload.html">📤 Fazer upload de certificado</a>
+        </div>
+    </div>
+
+    <script>
+        const codigoInput = document.getElementById('codigoInput');
+        const verificarBtn = document.getElementById('verificarBtn');
+        const loading = document.getElementById('loading');
+        const resultValid = document.getElementById('resultValid');
+        const resultInvalid = document.getElementById('resultInvalid');
+
+        // Verificar se há código na URL (vindo do QR Code)
+        const urlParams = new URLSearchParams(window.location.search);
+        const codigoUrl = urlParams.get('id');
+        
+        if (codigoUrl) {
+            codigoInput.value = codigoUrl;
+            // Auto-verificar após 500ms
+            setTimeout(() => verificarCertificado(), 500);
+        }
+
+        // Verificar ao clicar no botão
+        verificarBtn.addEventListener('click', verificarCertificado);
+
+        // Verificar ao pressionar Enter
+        codigoInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                verificarCertificado();
+            }
+        });
+
+        async function verificarCertificado() {
+            const codigo = codigoInput.value.trim();
+            
+            if (!codigo) {
+                alert('Por favor, digite o código do certificado');
+                return;
+            }
+
+            // Esconder resultados anteriores
+            resultValid.style.display = 'none';
+            resultInvalid.style.display = 'none';
+            loading.style.display = 'block';
+            verificarBtn.disabled = true;
+
+            try {
+                const response = await fetch(`/api/validar/${codigo}`);
+                const data = await response.json();
+
+                loading.style.display = 'none';
+                verificarBtn.disabled = false;
+
+                if (data.valido) {
+                    // Certificado válido
+                    document.getElementById('validAluno').textContent = data.dados.aluno;
+                    document.getElementById('validCurso').textContent = data.dados.curso;
+                    document.getElementById('validCarga').textContent = data.dados.cargaHoraria || 'N/A';
+                    document.getElementById('validData').textContent = data.dados.dataEmissao || 'N/A';
+                    document.getElementById('validCodigo').textContent = data.dados.codigo;
+                    
+                    const statusBadge = document.getElementById('validStatus');
+                    statusBadge.textContent = data.status;
+                    statusBadge.className = `status-badge ${data.status}`;
+                    
+                    resultValid.style.display = 'block';
+                } else {
+                    // Certificado inválido
+                    resultInvalid.style.display = 'block';
+                }
+
+            } catch (error) {
+                loading.style.display = 'none';
+                verificarBtn.disabled = false;
+                alert('Erro ao verificar certificado: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Certificados com QR Code</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 50px;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 50px;
+            line-height: 1.6;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 40px 30px;
+            color: white;
+            text-decoration: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .card-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .card-description {
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .features {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .features h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .features ul {
+            list-style: none;
+            text-align: left;
+        }
+
+        .features li {
+            padding: 12px 0;
+            color: #555;
+            font-size: 16px;
+        }
+
+        .features li:before {
+            content: "✓ ";
+            color: #4caf50;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .footer {
+            margin-top: 40px;
+            color: #999;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 Sistema de Certificados</h1>
+        <p class="subtitle">
+            Plataforma completa para gerenciar certificados com validação por QR Code.<br>
+            Seguro, rápido e fácil de usar.
+        </p>
+
+        <div class="cards">
+            <a href="upload.html" class="card">
+                <div class="card-icon">📤</div>
+                <div class="card-title">Upload de Certificado</div>
+                <div class="card-description">
+                    Envie um certificado PDF e adicione automaticamente um QR Code de validação
+                </div>
+            </a>
+
+            <a href="validar.html" class="card">
+                <div class="card-icon">🔍</div>
+                <div class="card-title">Validar Certificado</div>
+                <div class="card-description">
+                    Verifique a autenticidade de um certificado usando o código ou QR Code
+                </div>
+            </a>
+        </div>
+
+        <div class="features">
+            <h2>🚀 Funcionalidades</h2>
+            <ul>
+                <li>Extração automática de dados do certificado (nome, curso, carga horária)</li>
+                <li>Geração de código único (UUID) para cada certificado</li>
+                <li>Criação automática de QR Code com link de validação</li>
+                <li>Inserção do QR Code diretamente no PDF original</li>
+                <li>Página de validação com verificação em tempo real</li>
+                <li>Banco de dados SQLite para armazenamento seguro</li>
+                <li>Interface moderna e responsiva</li>
+                <li>Sistema completo pronto para uso</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            Sistema de Certificados v1.0 | Desenvolvido com Node.js + Express
+        </div>
+    </div>
+</body>
+</html>
