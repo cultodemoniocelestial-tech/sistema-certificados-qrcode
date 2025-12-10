@@ -298,7 +298,7 @@
 
         // Verificar se há código na URL (vindo do QR Code)
         const urlParams = new URLSearchParams(window.location.search);
-        const codigoUrl = urlParams.get('id');
+        const codigoUrl = urlParams.get('codigo') || urlParams.get('id');
         
         if (codigoUrl) {
             codigoInput.value = codigoUrl;
@@ -331,7 +331,7 @@
             verificarBtn.disabled = true;
 
             try {
-                const response = await fetch(`/api/validar/${codigo}`);
+                const response = await fetch(`/api/validar?codigo=${encodeURIComponent(codigo)}`);
                 const data = await response.json();
 
                 loading.style.display = 'none';
@@ -346,8 +346,8 @@
                     document.getElementById('validCodigo').textContent = data.dados.codigo;
                     
                     const statusBadge = document.getElementById('validStatus');
-                    statusBadge.textContent = data.status;
-                    statusBadge.className = `status-badge ${data.status}`;
+                    statusBadge.textContent = data.dados.status || 'ativo';
+                    statusBadge.className = `status-badge ${data.dados.status || 'ativo'}`;
                     
                     resultValid.style.display = 'block';
                 } else {

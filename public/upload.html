@@ -338,7 +338,7 @@
             result.style.display = 'none';
 
             try {
-                const response = await fetch('/api/processar-certificado', {
+                const response = await fetch('/api/processar', {
                     method: 'POST',
                     body: formData
                 });
@@ -347,21 +347,21 @@
 
                 loading.style.display = 'none';
 
-                if (data.sucesso) {
+                if (data.success) {
                     // Mostrar resultado
-                    document.getElementById('resultAluno').textContent = data.dados.aluno;
-                    document.getElementById('resultCurso').textContent = data.dados.curso;
-                    document.getElementById('resultCarga').textContent = data.dados.cargaHoraria || 'N/A';
-                    document.getElementById('resultData').textContent = data.dados.dataEmissao || 'N/A';
-                    document.getElementById('resultCodigo').textContent = data.dados.codigo;
+                    document.getElementById('resultAluno').textContent = data.informacoes.nome || 'N/A';
+                    document.getElementById('resultCurso').textContent = data.informacoes.curso || 'N/A';
+                    document.getElementById('resultCarga').textContent = data.informacoes.cargaHoraria || 'N/A';
+                    document.getElementById('resultData').textContent = data.informacoes.data || 'N/A';
+                    document.getElementById('resultCodigo').textContent = data.codigo;
                     
                     const downloadBtn = document.getElementById('downloadBtn');
-                    downloadBtn.href = data.dados.urlDownload;
+                    downloadBtn.href = data.urlPDF;
                     
                     result.classList.remove('error');
                     result.style.display = 'block';
                 } else {
-                    throw new Error(data.erro || 'Erro desconhecido');
+                    throw new Error(data.error || 'Erro desconhecido');
                 }
 
             } catch (error) {
